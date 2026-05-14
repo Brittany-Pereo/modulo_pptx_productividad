@@ -514,6 +514,7 @@ armar_tabla_dinamica <- function(df, indicadores, etiquetas, mes_nombre) {
     )
 }
 
+
 ft_planeacion <- function(df,
                           w1 = 4.05, w2 = 1.20, w3 = 1.20, w4 = 1.35,
                           header_negro = "#3B3B3B",
@@ -567,6 +568,28 @@ ft_planeacion <- function(df,
   
   ft
 }
+
+etiquetas_inteligentes <- function(fechas) {
+  # Asegurar que fechas es un vector
+  fechas <- as.Date(fechas)
+
+  # Obtener mes (como character, no factor)
+  meses <- clock::date_format(fechas, format="%b",
+                              locale = clock::clock_locale("es"))
+  años <- year(fechas)
+
+  # Determinar dónde mostrar el año completo (cambio de año o enero)
+  mostrar_año <- c(TRUE, diff(años) != 0) | meses == "ene."
+
+  # Construir etiquetas
+  etiquetas <- ifelse(mostrar_año,
+                      paste0(meses, "\n", años),
+                      meses)
+  etiquetas <- gsub("\\.", "", etiquetas)
+
+  return(etiquetas)
+}
+
 # Grafica temporal --------------------------------------------------------
 fecha_fin_graf <- lubridate::floor_date(fecha_corte, "month")
 grafica_consultas_periodos <- function(df,
